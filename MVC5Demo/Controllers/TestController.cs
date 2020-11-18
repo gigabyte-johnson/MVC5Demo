@@ -9,14 +9,69 @@ namespace MVC5Demo.Controllers
 {
     public class TestController : Controller
     {
-        // GET: Test
-        public ActionResult Index()
-        {
-            var data = new List<Person>() {
+        static List<Person> data = new List<Person>() {
                 new Person() {Id=1, Name="johnson", Age=26 },
                 new Person() {Id=2, Name="Nadia", Age=25 },
             };
+        // GET: Test
+        public ActionResult Index()
+        {
+            
             return View(data);
+        }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Person person)
+        {
+            if (ModelState.IsValid)
+            {
+                data.Add(person);
+                return RedirectToAction("Index");
+            }
+            return View(person);
+        }
+
+        public ActionResult Edit(int id)
+        {
+      
+            return View(data.FirstOrDefault(p => p.Id == id));
+        }
+
+        [HttpPost]
+        public ActionResult Edit(int id, Person person)
+        {
+            if (ModelState.IsValid)
+            {
+                var one = data.FirstOrDefault(p => p.Id == id);
+                one.Name = person.Name;
+                one.Age = person.Age;
+                return RedirectToAction("Index");
+            }
+            return View(person);
+            
+        }
+
+        public ActionResult Details(int id)
+        {
+            return View(data.FirstOrDefault(p => p.Id == id));
+        }
+
+        public ActionResult Delete(int id)
+        {
+
+            return View(data.FirstOrDefault(p => p.Id == id));
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection form)
+        {
+            data.Remove(data.First(p => p.Id == id));
+            return RedirectToAction("Index");
         }
     }
 }
